@@ -16,16 +16,19 @@ class Graph extends React.Component {
     root.c3 = ["ha", root.c1];
 
     const svg = render(root);
-    this.setState({ svg });
+    this.setState({ root, svg });
   }
 
   render() {
     return (
-      <div
-        className="main-rendering"
-        onClick={this.clicked}
-        dangerouslySetInnerHTML={{ __html: this.state.svg }}
-      />
+      <div className="Graph">
+        <pre>{JSON.stringify(this.state.root, null, 3)}</pre>
+        <div
+          className="main-rendering"
+          onClick={this.clicked}
+          dangerouslySetInnerHTML={{ __html: this.state.svg }}
+        />
+      </div>
     );
   }
 }

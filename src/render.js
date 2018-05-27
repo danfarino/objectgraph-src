@@ -4,50 +4,63 @@ export default function render(root) {
   const parts = [
     "digraph {",
     "splines = true",
-    "rank = max",
+    'rank = "sink"',
     'edge [color="#999999"]'
   ];
 
   let nextId = 1;
   const ids = new WeakMap();
 
+  function escapeString(str) {
+    return str.replace(/"/g, '\\"');
+  }
+
   const recurse = (node, parentId) => {
     let nodeId = ids.get(node);
     if (!nodeId) {
       nodeId = nextId++;
 
+      try {
+        ids.set(node, nodeId);
+      } catch (e) {}
+
       let label;
+
       switch (typeof node) {
         case "number":
           label = node;
           break;
         case "string":
-          label = node.replace(/"/g, '\\"');
+          label = escapeString(node);
           console.log(label);
           break;
         default:
           if (Array.isArray(node)) {
+            // array:
+
             label = "[]";
+            for (const item of node) {
+              recurse(item, nodeId);
+            }
           } else {
+            // object:
+
             label = "{}";
+            for (const key in node) {
+              const keyNodeId = nextId++;
+              const label = escapeString(key);
+
+              parts.push(
+                `node_${keyNodeId} [label="${label}" shape="invhouse"]`
+              );
+              parts.push(`node_${nodeId} -> node_${keyNodeId}`);
+
+              recurse(node[key], keyNodeId);
+            }
           }
       }
 
       parts.push(`node_${nodeId} [label="${label}"]`);
-
-      try {
-        ids.set(node, nodeId);
-      } catch (e) {}
-
-      if (Array.isArray(node)) {
-        for (const item of node) {
-          recurse(item, nodeId);
-        }
-      } else if (typeof node === "object") {
-        for (const key in node) {
-          recurse(node[key], nodeId);
-        }
-      }
     }
 
     if (parentId) {
@@ -60,6 +73,7 @@ export default function render(root) {
   parts.push("}");
 
   const dot = parts.join("\n");
+  console.log(dot);
   const svg = Viz(dot);
   return svg;
 }
