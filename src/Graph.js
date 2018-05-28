@@ -22,7 +22,7 @@ class Graph extends React.Component {
   render() {
     return (
       <div className="Graph">
-        <pre>{JSON.stringify(this.state.root, null, 3)}</pre>
+        {/* <pre>{JSON.stringify(this.state.root, null, 3)}</pre> */}
         <div
           className="main-rendering"
           onClick={this.clicked}

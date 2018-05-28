@@ -4,7 +4,7 @@ export default function render(root) {
   const parts = [
     "digraph {",
     "splines = true",
-    'rank = "sink"',
+    "rank = sink",
     'edge [color="#999999"]'
   ];
 
@@ -45,26 +45,33 @@ export default function render(root) {
           } else {
             // object:
 
-            label = "{}";
-            for (const key in node) {
-              const keyNodeId = nextId++;
-              const label = escapeString(key);
+            label = "{";
+            const keys = Object.keys(node);
 
-              parts.push(
-                `node_${keyNodeId} [label="${label}" shape="invhouse"]`
-              );
-              parts.push(`node_${nodeId} -> node_${keyNodeId}`);
+            for (let i = 0; i < keys.length; i++) {
+              const key = keys[i];
 
-              recurse(node[key], keyNodeId);
+              const labelId = nextId++;
+              label += `<${labelId}> ${escapeString(key)}`;
+              if (i < keys.length - 1) {
+                label += "|";
+              }
+
+              recurse(node[key], `${nodeId}:${labelId}`);
             }
+
+            label += "}";
+            console.log("label", label);
+
+            parts.push(`${nodeId} [label="${label}" shape=record]`);
           }
       }
 
-      parts.push(`node_${nodeId} [label="${label}"]`);
+      parts.push(`${nodeId} [label="${label}"]`);
     }
 
     if (parentId) {
-      parts.push(`node_${parentId} -> node_${nodeId}`);
+      parts.push(`${parentId} -> ${nodeId}`);
     }
   };
 
