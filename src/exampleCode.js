@@ -1,6 +1,6 @@
 export default `
 
-// reminder: immer is in score as "produce"
+// reminder: immer is in scope as "produce"
 
 const obj1 = {
   sub1: {
