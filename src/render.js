@@ -26,8 +26,15 @@ export default function render(...roots) {
         ids.set(node, nodeId);
       } catch (e) {}
 
-      switch (typeof node) {
+      let nodeType = typeof node;
+      if (node === null) {
+        nodeType = "null";
+      }
+
+      switch (nodeType) {
+        case "null":
         case "number":
+        case "undefined":
         case "boolean":
           parts.push(
             `${nodeId} [label=${node} color="#eeeeee" fontcolor="#bbbbbb"]`
@@ -90,7 +97,7 @@ export default function render(...roots) {
   for (const root of roots) {
     const rootNodeId = nextId++;
     parts.push(
-      `${rootNodeId} [label=${index++} shape=cds color=white fontcolor=black fillcolor="#dddddd" style=filled]`
+      `${rootNodeId} [label=${++index} shape=cds color=white fontcolor=black fillcolor="#dddddd" style=filled]`
     );
     recurse(root, colorNum++ % 6 + 1, rootNodeId);
   }
