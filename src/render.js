@@ -55,7 +55,7 @@ export default function render(...roots) {
               const labelId = nextId++;
               label += "<TR>";
 
-              if (i == 0) {
+              if (i === 0) {
                 label += `<TD ROWSPAN="${keys.length}">${
                   Array.isArray(node) ? "[]" : "{}"
                 }</TD>`;
@@ -98,7 +98,6 @@ export default function render(...roots) {
   parts.push("}");
 
   const dot = parts.join("\n");
-  console.log(dot);
   const svg = Viz(dot);
   return svg;
 }

@@ -1,40 +1,58 @@
 import React from "react";
 import render from "./render";
-import produce from "immer";
+import immerProduce from "immer";
+import "codemirror";
+import "codemirror/lib/codemirror.css";
+import "codemirror/theme/material.css";
+import "codemirror/mode/javascript/javascript";
+import { Controlled as CodeMirror } from "react-codemirror2";
+import exampleCode from "./exampleCode";
+import "./Graph.css";
 
 class Graph extends React.Component {
   state = {
-    svg: ""
+    svg: "",
+    code: exampleCode.replace(/(^\s+|\s+$)/g, "")
   };
 
   componentDidMount() {
-    // example data. Change this to experiment:
-
-    const r1 = {
-      sub1: {
-        sub2: [5, 6, 7],
-        other: {}
-      },
-      name: "woot"
-    };
-
-    const r2 = produce(r1, d => {
-      d.sub1.abc = false;
-      d.sub1.name = r1.name;
-    });
-
-    const r3 = produce(r2, d => {
-      d.sub1.sub2.pop();
-    });
-
-    const svg = render(r1, r2, r3);
-    this.setState({ root, svg });
+    this.renderGraph();
   }
 
+  renderGraph = () => {
+    let toShow = [];
+    function show(...args) {
+      toShow = args;
+    }
+
+    // we need to capture this function here otherwise eval can't see it
+    // (probably has something to do with webpack)
+    function produce(...args) {
+      return immerProduce(...args);
+    }
+
+    eval(this.state.code);
+
+    const svg = render(...toShow);
+    this.setState({ root, svg });
+  };
+
   render() {
+    const { svg, code } = this.state;
+
     return (
       <div className="Graph">
-        <div dangerouslySetInnerHTML={{ __html: this.state.svg }} />
+        <div className="svg" dangerouslySetInnerHTML={{ __html: svg }} />
+        <div className="code">
+          <button onClick={this.renderGraph}>Render</button>
+          <CodeMirror
+            value={code}
+            onBeforeChange={(editor, data, value) =>
+              this.setState({ code: value })
+            }
+            options={{ mode: "javascript", lineNumbers: true }}
+          />
+        </div>
       </div>
     );
   }
