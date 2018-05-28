@@ -1,8 +1,7 @@
-import React, { Component } from "react";
-import "./App.css";
+import React from "react";
 import Graph from "./Graph";
 
-class App extends Component {
+class App extends React.Component {
   render() {
     return (
       <div className="App">

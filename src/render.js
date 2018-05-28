@@ -5,18 +5,18 @@ export default function render(...roots) {
     "digraph {",
     "splines = true",
     "rankdir = LR",
-    'node [colorscheme = "pastel16"]',
+    'node [colorscheme = "pastel16" fontname = courier]',
     'edge [colorscheme = "pastel16"]'
   ];
 
   let nextId = 1;
-  const ids = new Map();
+  const ids = new WeakMap(); // switch to Map to see the rendering share values
 
   function escapeString(str) {
-    return str.replace(/"/g, '\\"');
+    return str.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
   }
 
-  const recurse = (node, color, rank, parentId) => {
+  const recurse = (node, color, parentId) => {
     let nodeId = ids.get(node);
 
     if (!nodeId) {
@@ -29,46 +29,52 @@ export default function render(...roots) {
       switch (typeof node) {
         case "number":
         case "boolean":
-          parts.push(`${nodeId} [label=${node} color=${color}]`);
+          parts.push(
+            `${nodeId} [label=${node} color="#eeeeee" fontcolor="#bbbbbb"]`
+          );
           break;
 
         case "string":
           parts.push(
             `${nodeId} [label="${escapeString(
               node
-            )}" rank=${rank} color=${color}]`
+            )}" color="#eeeeee" fontcolor="#bbbbbb"]`
           );
           break;
 
         default:
-          if (Array.isArray(node)) {
-            parts.push(`${nodeId} [label="[]" color=${color}]`);
-          } else {
-            parts.push(`${nodeId} [label="{}" color=${color}]`);
-          }
-
           const keys = Object.keys(node);
 
           if (keys.length > 0) {
-            const keyTableId = nextId++;
-
-            let label = '<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">';
+            let label =
+              '<<TABLE BORDER="0" CELLPADDING="5" CELLBORDER="1" CELLSPACING="0">';
 
             for (let i = 0; i < keys.length; i++) {
               const key = keys[i];
 
               const labelId = nextId++;
-              label += `<TR><TD PORT="${labelId}">${escapeString(
-                key
-              )}</TD></TR>`;
+              label += "<TR>";
 
-              recurse(node[key], color, rank + 1, `${keyTableId}:${labelId}`);
+              if (i == 0) {
+                label += `<TD ROWSPAN="${keys.length}">${
+                  Array.isArray(node) ? "[]" : "{}"
+                }</TD>`;
+              }
+
+              label += `<TD PORT="${labelId}">${escapeString(key)}</TD></TR>`;
+
+              recurse(node[key], color, `${nodeId}:${labelId}`);
             }
 
-            label += `</TABLE>> shape=plaintext color="${color}"`;
+            label += `</TABLE>> shape=plaintext`;
 
-            parts.push(`${nodeId} -> ${keyTableId} [color=${color}]`);
-            parts.push(`${keyTableId} [label=${label} color=${color}]`);
+            parts.push(`${nodeId} [label=${label} color=${color}]`);
+          } else {
+            parts.push(
+              `${nodeId} [label="${
+                Array.isArray(node) ? "[]" : "{}"
+              }" color=${color} shape=rect]`
+            );
           }
       }
     }
@@ -80,8 +86,13 @@ export default function render(...roots) {
 
   let colorNum = 0;
 
+  let index = 0;
   for (const root of roots) {
-    recurse(root, colorNum++ % 6 + 1, 1);
+    const rootNodeId = nextId++;
+    parts.push(
+      `${rootNodeId} [label=${index++} shape=cds color=white fontcolor=black fillcolor="#dddddd" style=filled]`
+    );
+    recurse(root, colorNum++ % 6 + 1, rootNodeId);
   }
 
   parts.push("}");

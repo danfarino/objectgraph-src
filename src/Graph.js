@@ -1,6 +1,6 @@
 import React from "react";
 import render from "./render";
-import provide from "immer";
+import produce from "immer";
 
 class Graph extends React.Component {
   state = {
@@ -8,53 +8,33 @@ class Graph extends React.Component {
   };
 
   componentDidMount() {
-    // const root = {
-    //   name: 'da"n"',
-    //   age: 40,
-    //   c1: {},
-    //   c2: { name: "haha" }
-    // };
-    // root.c2 = root.c1;
-    // root.c3 = ["ha", root.c1, root];
-
-    // const root2 = provide(root, draft => {
-    //   draft.c1.name = "dan";
-    //   draft.c3.push(root.c1);
-    // });
-
-    // const r1 = {
-    //   state: "something",
-    //   items: [{ name: "abc", value: 1 }, { name: "dec", value: 2 }]
-    // };
-
-    // const r2 = provide(r1, draft => {
-    //   draft.items[1].name = "foo";
-    //   draft.items.push({ name: "heh", value: 4 });
-    // });
+    // example data. Change this to experiment:
 
     const r1 = {
-      sub1: { foo: true },
-      sub2: {}
+      sub1: {
+        sub2: [5, 6, 7],
+        other: {}
+      },
+      name: "woot"
     };
 
-    const r2 = {
-      ...r1,
-      sub2: []
-    };
+    const r2 = produce(r1, d => {
+      d.sub1.abc = false;
+      d.sub1.name = r1.name;
+    });
 
-    const svg = render(r1, r2);
+    const r3 = produce(r2, d => {
+      d.sub1.sub2.pop();
+    });
+
+    const svg = render(r1, r2, r3);
     this.setState({ root, svg });
   }
 
   render() {
     return (
       <div className="Graph">
-        {/* <pre>{JSON.stringify(this.state.root, null, 3)}</pre> */}
-        <div
-          className="main-rendering"
-          onClick={this.clicked}
-          dangerouslySetInnerHTML={{ __html: this.state.svg }}
-        />
+        <div dangerouslySetInnerHTML={{ __html: this.state.svg }} />
       </div>
     );
   }
