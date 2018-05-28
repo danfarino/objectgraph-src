@@ -1,22 +1,24 @@
 import * as Viz from "viz.js";
 
-export default function render(root) {
+export default function render(...roots) {
   const parts = [
     "digraph {",
     "splines = true",
-    "rank = sink",
-    'edge [color="#999999"]'
+    "rankdir = LR",
+    'node [colorscheme = "pastel16"]',
+    'edge [colorscheme = "pastel16"]'
   ];
 
   let nextId = 1;
-  const ids = new WeakMap();
+  const ids = new Map();
 
   function escapeString(str) {
     return str.replace(/"/g, '\\"');
   }
 
-  const recurse = (node, parentId) => {
+  const recurse = (node, color, rank, parentId) => {
     let nodeId = ids.get(node);
+
     if (!nodeId) {
       nodeId = nextId++;
 
@@ -26,55 +28,61 @@ export default function render(root) {
 
       switch (typeof node) {
         case "number":
-          parts.push(`${nodeId} [label=${node}]`);
+        case "boolean":
+          parts.push(`${nodeId} [label=${node} color=${color}]`);
           break;
 
         case "string":
-          parts.push(`${nodeId} [label="${escapeString(node)}"]`);
+          parts.push(
+            `${nodeId} [label="${escapeString(
+              node
+            )}" rank=${rank} color=${color}]`
+          );
           break;
 
         default:
           if (Array.isArray(node)) {
-            parts.push(`${nodeId} [label="[]"]`);
-
-            for (const item of node) {
-              recurse(item, nodeId);
-            }
+            parts.push(`${nodeId} [label="[]" color=${color}]`);
           } else {
-            parts.push(`${nodeId} [label="{}"]`);
+            parts.push(`${nodeId} [label="{}" color=${color}]`);
+          }
 
-            const keys = Object.keys(node);
+          const keys = Object.keys(node);
 
-            if (keys.length > 0) {
-              const keyTableId = nextId++;
+          if (keys.length > 0) {
+            const keyTableId = nextId++;
 
-              let label =
-                '<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0"><TR>';
+            let label = '<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">';
 
-              for (let i = 0; i < keys.length; i++) {
-                const key = keys[i];
+            for (let i = 0; i < keys.length; i++) {
+              const key = keys[i];
 
-                const labelId = nextId++;
-                label += `<TD PORT="${labelId}">${escapeString(key)}</TD>`;
+              const labelId = nextId++;
+              label += `<TR><TD PORT="${labelId}">${escapeString(
+                key
+              )}</TD></TR>`;
 
-                recurse(node[key], `${keyTableId}:${labelId}`);
-              }
-
-              label += "</TR></TABLE>> shape=plaintext";
-
-              parts.push(`${nodeId} -> ${keyTableId}`);
-              parts.push(`${keyTableId} [label=${label}]`);
+              recurse(node[key], color, rank + 1, `${keyTableId}:${labelId}`);
             }
+
+            label += `</TABLE>> shape=plaintext color="${color}"`;
+
+            parts.push(`${nodeId} -> ${keyTableId} [color=${color}]`);
+            parts.push(`${keyTableId} [label=${label} color=${color}]`);
           }
       }
     }
 
     if (parentId) {
-      parts.push(`${parentId} -> ${nodeId}`);
+      parts.push(`${parentId} -> ${nodeId} [color=${color}]`);
     }
   };
 
-  recurse(root);
+  let colorNum = 0;
+
+  for (const root of roots) {
+    recurse(root, colorNum++ % 6 + 1, 1);
+  }
 
   parts.push("}");
 
