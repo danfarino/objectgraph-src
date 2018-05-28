@@ -97,7 +97,7 @@ export default function render(...roots) {
   for (const root of roots) {
     const rootNodeId = nextId++;
     parts.push(
-      `${rootNodeId} [label=${++index} shape=cds color=white fontcolor=black fillcolor="#dddddd" style=filled]`
+      `${rootNodeId} [label=<<B>${++index}</B>> shape=cds color=white fontcolor=white fillcolor="#cccccc" style=filled]`
     );
     recurse(root, colorNum++ % 6 + 1, rootNodeId);
   }

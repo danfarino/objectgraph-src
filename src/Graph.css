@@ -12,17 +12,23 @@
 .Graph > .svg {
     grid-area: svg;
     margin-left: 2em;
+    overflow: scroll;
 }
 
 .Graph > .code {
     grid-area: code;
+    border-right: 1px solid #ddd;
 
     display: grid;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto 1fr auto;
 }
 
 .Graph > .code > .react-codemirror2 > .CodeMirror {
     height: 100%;
     font-size: 1.3em;
-    border-right: 1px solid #ddd;
+}
+
+.Graph > .code > .error {
+    padding: 0.2em;
+    color: red;
 }

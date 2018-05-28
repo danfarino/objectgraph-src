@@ -12,6 +12,7 @@ import "./Graph.css";
 class Graph extends React.Component {
   state = {
     svg: "",
+    error: null,
     code: exampleCode.replace(/(^\s+|\s+$)/g, "")
   };
 
@@ -20,25 +21,29 @@ class Graph extends React.Component {
   }
 
   renderGraph = () => {
-    let toShow = [];
-    function show(...args) {
-      toShow = args;
+    try {
+      let toShow = [];
+      function show(...args) {
+        toShow = args;
+      }
+
+      // we need to capture this function here otherwise eval can't see it
+      // (probably has something to do with webpack)
+      function produce(...args) {
+        return immerProduce(...args);
+      }
+
+      eval(this.state.code);
+
+      const svg = render(...toShow);
+      this.setState({ root, svg, error: null });
+    } catch (e) {
+      this.setState({ error: String(e) });
     }
-
-    // we need to capture this function here otherwise eval can't see it
-    // (probably has something to do with webpack)
-    function produce(...args) {
-      return immerProduce(...args);
-    }
-
-    eval(this.state.code);
-
-    const svg = render(...toShow);
-    this.setState({ root, svg });
   };
 
   render() {
-    const { svg, code } = this.state;
+    const { svg, code, error } = this.state;
 
     return (
       <div className="Graph">
@@ -52,6 +57,7 @@ class Graph extends React.Component {
             }
             options={{ mode: "javascript", lineNumbers: true }}
           />
+          <div className="error">{error}</div>
         </div>
       </div>
     );
