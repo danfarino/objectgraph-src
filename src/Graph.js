@@ -13,7 +13,7 @@ class Graph extends React.Component {
       c1: {}
     };
     root.c2 = root.c1;
-    root.c3 = ["ha", root.c1];
+    root.c3 = ["ha", root.c1, root];
 
     const svg = render(root);
     this.setState({ root, svg });

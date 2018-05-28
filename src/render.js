@@ -24,50 +24,49 @@ export default function render(root) {
         ids.set(node, nodeId);
       } catch (e) {}
 
-      let label;
-
       switch (typeof node) {
         case "number":
-          label = node;
+          parts.push(`${nodeId} [label=${node}]`);
           break;
+
         case "string":
-          label = escapeString(node);
-          console.log(label);
+          parts.push(`${nodeId} [label="${escapeString(node)}"]`);
           break;
+
         default:
           if (Array.isArray(node)) {
-            // array:
+            parts.push(`${nodeId} [label="[]"]`);
 
-            label = "[]";
             for (const item of node) {
               recurse(item, nodeId);
             }
           } else {
-            // object:
+            parts.push(`${nodeId} [label="{}"]`);
 
-            label = "{";
             const keys = Object.keys(node);
 
-            for (let i = 0; i < keys.length; i++) {
-              const key = keys[i];
+            if (keys.length > 0) {
+              const keyTableId = nextId++;
 
-              const labelId = nextId++;
-              label += `<${labelId}> ${escapeString(key)}`;
-              if (i < keys.length - 1) {
-                label += "|";
+              let label =
+                '<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0"><TR>';
+
+              for (let i = 0; i < keys.length; i++) {
+                const key = keys[i];
+
+                const labelId = nextId++;
+                label += `<TD PORT="${labelId}">${escapeString(key)}</TD>`;
+
+                recurse(node[key], `${keyTableId}:${labelId}`);
               }
 
-              recurse(node[key], `${nodeId}:${labelId}`);
+              label += "</TR></TABLE>> shape=plaintext";
+
+              parts.push(`${nodeId} -> ${keyTableId}`);
+              parts.push(`${keyTableId} [label=${label}]`);
             }
-
-            label += "}";
-            console.log("label", label);
-
-            parts.push(`${nodeId} [label="${label}" shape=record]`);
           }
       }
-
-      parts.push(`${nodeId} [label="${label}"]`);
     }
 
     if (parentId) {
