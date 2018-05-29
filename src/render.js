@@ -36,14 +36,9 @@ export default function render(...roots) {
         case "number":
         case "undefined":
         case "boolean":
-          parts.push(`${nodeId} [label=${node} color="#cccccc" shape=rect]`);
-          break;
-
         case "string":
           parts.push(
-            `${nodeId} [shape=note label="${escapeString(
-              node
-            )}" color="#cccccc"]`
+            `${nodeId} [label=${escapeString(node)} color="#cccccc" shape=rect]`
           );
           break;
 
@@ -81,6 +76,11 @@ export default function render(...roots) {
               ) {
                 isValueType = true;
                 label += String(value);
+              }
+
+              if (typeof value === "string") {
+                isValueType = true;
+                label += escapeString(value);
               }
 
               label += "</TD></TR>";
