@@ -1,24 +1,15 @@
 export default `
-
-// reminder: immer is in scope as "produce"
-
 const obj1 = {
-  sub1: {
-    sub2: [5, 6, 7],
-    other: {}
-  },
-  name: "woot"
+  name: 'Dan'
 };
 
-const obj2 = produce(obj1, d => {
-  d.sub1.abc = false;
-  d.sub1.name = obj1.name;
-});
+const obj2 = {
+  ...obj1,
+  foo: 123
+};
 
-const obj3 = produce(obj2, d => {
-  d.sub1.sub2.pop();
-});
-
+const obj3 = obj1;
+obj1.name = 'John';
+  
 show(obj1, obj2, obj3);
-
 `;
