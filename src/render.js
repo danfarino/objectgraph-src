@@ -36,16 +36,14 @@ export default function render(...roots) {
         case "number":
         case "undefined":
         case "boolean":
-          parts.push(
-            `${nodeId} [label=${node} color="#eeeeee" fontcolor="#bbbbbb"]`
-          );
+          parts.push(`${nodeId} [label=${node} color="#cccccc" shape=rect]`);
           break;
 
         case "string":
           parts.push(
             `${nodeId} [shape=note label="${escapeString(
               node
-            )}" color="#cccccc" fontcolor="#aaaaaa"]`
+            )}" color="#cccccc"]`
           );
           break;
 
@@ -108,18 +106,28 @@ export default function render(...roots) {
     if (parentId) {
       parts.push(`${parentId} -> ${nodeId} [color=${color}]`);
     }
+
+    return nodeId;
   };
 
   let colorNum = 0;
 
   let index = 0;
+  const rootNodeIds = [];
   for (const root of roots) {
     const rootNodeId = nextId++;
+    rootNodeIds.push(rootNodeId);
+
     parts.push(
       `${rootNodeId} [label=<<B>${++index}</B>> shape=cds color=white fontcolor=white fillcolor="#cccccc" style=filled]`
     );
-    recurse(root, colorNum++ % 6 + 1, rootNodeId);
+    const nodeId = recurse(root, colorNum++ % 6 + 1);
+    parts.push(
+      `${rootNodeId} -> ${nodeId} [style=dashed color="#cccccc" arrowhead=none]`
+    );
   }
+
+  parts.push(`{ rank=same; ${rootNodeIds.join("->")} [style=invis] }`);
 
   parts.push("}");
 
