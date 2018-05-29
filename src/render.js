@@ -43,9 +43,9 @@ export default function render(...roots) {
 
         case "string":
           parts.push(
-            `${nodeId} [label="${escapeString(
+            `${nodeId} [shape=note label="${escapeString(
               node
-            )}" color="#eeeeee" fontcolor="#bbbbbb"]`
+            )}" color="#cccccc" fontcolor="#aaaaaa"]`
           );
           break;
 
@@ -63,14 +63,33 @@ export default function render(...roots) {
               label += "<TR>";
 
               if (i === 0) {
-                label += `<TD ROWSPAN="${keys.length}">${
+                label += `<TD ROWSPAN="${keys.length}" BGCOLOR="#eeeeee"><B>${
                   Array.isArray(node) ? "[]" : "{}"
-                }</TD>`;
+                }</B></TD>`;
               }
 
-              label += `<TD PORT="${labelId}">${escapeString(key)}</TD></TR>`;
+              label += `<TD BGCOLOR="#eeeeee"><B>${escapeString(
+                key
+              )}</B></TD><TD PORT="${labelId}">`;
 
-              recurse(node[key], color, `${nodeId}:${labelId}`);
+              const value = node[key];
+              let isValueType = false;
+
+              if (
+                value === null ||
+                typeof value === "undefined" ||
+                typeof value === "number" ||
+                typeof value === "boolean"
+              ) {
+                isValueType = true;
+                label += String(value);
+              }
+
+              label += "</TD></TR>";
+
+              if (!isValueType) {
+                recurse(value, color, `${nodeId}:${labelId}`);
+              }
             }
 
             label += `</TABLE>> shape=plaintext`;
@@ -78,9 +97,9 @@ export default function render(...roots) {
             parts.push(`${nodeId} [label=${label} color=${color}]`);
           } else {
             parts.push(
-              `${nodeId} [label="${
+              `${nodeId} [label=<<B>${
                 Array.isArray(node) ? "[]" : "{}"
-              }" color=${color} shape=rect]`
+              }</B>> color=${color} shape=rect fillcolor="#eeeeee" style=filled]`
             );
           }
       }

@@ -2,6 +2,7 @@
   "name": "immutability-viz",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://danfarino.github.io/objectgraph",
   "dependencies": {
     "codemirror": "^5.38.0",
     "immer": "^1.3.0",
