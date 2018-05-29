@@ -10,7 +10,7 @@ export default function render(...roots) {
   ];
 
   let nextId = 1;
-  const ids = new Map(); // switch to Map to see the rendering share values
+  const ids = new WeakMap(); // switch to Map to see the rendering share values
 
   function escapeString(str) {
     return str.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
