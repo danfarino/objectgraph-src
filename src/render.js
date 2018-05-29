@@ -13,7 +13,9 @@ export default function render(...roots) {
   const ids = new WeakMap(); // switch to Map to see the rendering share values
 
   function escapeString(str) {
-    return str.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+    return String(str)
+      .replace(/\\/g, "\\\\")
+      .replace(/"/g, '\\"');
   }
 
   const recurse = (node, color, parentId) => {
