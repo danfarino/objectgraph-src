@@ -3,13 +3,17 @@ const obj1 = {
   name: 'Dan'
 };
 
+show(obj1);
+
 const obj2 = {
   ...obj1,
   foo: 123
 };
 
+show(obj2);
+
 const obj3 = obj1;
-obj1.name = 'John';
+obj3.name = 'John';
   
-show(obj1, obj2, obj3);
+show(obj3);
 `;

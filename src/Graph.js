@@ -24,7 +24,9 @@ class Graph extends React.Component {
     try {
       let toShow = [];
       function show(...args) {
-        toShow = args;
+        for (const obj of args) {
+          toShow.push(obj);
+        }
       }
 
       // we need to capture this function here otherwise eval can't see it
