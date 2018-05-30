@@ -144,13 +144,14 @@ export default function render(...roots) {
     }
   }
 
-  parts.push(`{ rank=same; ${rootNodeIds.join("->")} [style=invis] }`);
+  if (rootNodeIds.length > 1) {
+    parts.push(`{ rank=same; ${rootNodeIds.join("->")} [style=invis] }`);
+  }
 
   parts.push("}");
 
   const dot = parts.join("\n");
 
-  console.log(dot);
   const svg = Viz(dot);
   return svg;
 }

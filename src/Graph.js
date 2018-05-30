@@ -8,12 +8,23 @@ import "codemirror/mode/javascript/javascript";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import exampleCode from "./exampleCode";
 import "./Graph.css";
+import LZString from "lz-string";
+
+const urlParams = new URLSearchParams(window.location.search);
+let initialCode;
+if (urlParams.get("code")) {
+  initialCode = LZString.decompressFromEncodedURIComponent(
+    urlParams.get("code")
+  );
+} else {
+  initialCode = exampleCode.replace(/(^\s+|\s+$)/g, "");
+}
 
 class Graph extends React.Component {
   state = {
     svg: "",
     error: null,
-    code: exampleCode.replace(/(^\s+|\s+$)/g, "")
+    code: initialCode
   };
 
   componentDidMount() {
@@ -44,6 +55,21 @@ class Graph extends React.Component {
     }
   };
 
+  getLink = () => {
+    const compressedCode = LZString.compressToEncodedURIComponent(
+      this.state.code
+    );
+
+    window.history.replaceState(
+      null,
+      null,
+      window.location.origin +
+        window.location.pathname +
+        "?code=" +
+        compressedCode
+    );
+  };
+
   render() {
     const { svg, code, error } = this.state;
 
@@ -51,7 +77,10 @@ class Graph extends React.Component {
       <div className="Graph">
         <div className="svg" dangerouslySetInnerHTML={{ __html: svg }} />
         <div className="code">
-          <button onClick={this.renderGraph}>Render</button>
+          <div className="buttons">
+            <button onClick={this.renderGraph}>Render</button>
+            <button onClick={this.getLink}>Get Link</button>
+          </div>
           <CodeMirror
             value={code}
             onBeforeChange={(editor, data, value) =>

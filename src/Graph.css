@@ -32,3 +32,8 @@
     padding: 0.2em;
     color: red;
 }
+
+.Graph > .code > .buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
