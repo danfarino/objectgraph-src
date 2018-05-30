@@ -1,6 +1,10 @@
 export default `
+// Call the "show" function with any objects/values
+// that you'd like to graph.
+
 const obj1 = {
-  name: 'Dan'
+  name: 'Dan',
+  numbers: [11, 13, 17]
 };
 
 show(obj1);

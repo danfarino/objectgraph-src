@@ -4,6 +4,8 @@ export default function render(...roots) {
   const parts = [
     "digraph {",
     "splines = true",
+    "overlap = false",
+    "concentrate = true",
     "rankdir = LR",
     'node [colorscheme = "pastel16" fontname = courier]',
     'edge [colorscheme = "pastel16"]'
@@ -13,9 +15,7 @@ export default function render(...roots) {
   const ids = new WeakMap(); // switch to Map to see the rendering share values
 
   function escapeString(str) {
-    return String(str)
-      .replace(/\\/g, "\\\\")
-      .replace(/"/g, '\\"');
+    return str.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
   }
 
   const recurse = (node, color, parentId) => {
@@ -38,9 +38,14 @@ export default function render(...roots) {
         case "number":
         case "undefined":
         case "boolean":
+          parts.push(`${nodeId} [label=${node} color="#cccccc" shape=rect]`);
+          break;
+
         case "string":
           parts.push(
-            `${nodeId} [label=${escapeString(node)} color="#cccccc" shape=rect]`
+            `${nodeId} [label="\\\"${escapeString(
+              node
+            )}\\\"" color="#cccccc" shape=rect]`
           );
           break;
 
@@ -82,7 +87,7 @@ export default function render(...roots) {
 
               if (typeof value === "string") {
                 isValueType = true;
-                label += escapeString(value);
+                label += `"${escapeString(value)}"`;
               }
 
               label += "</TD></TR>";
@@ -106,7 +111,7 @@ export default function render(...roots) {
     }
 
     if (parentId) {
-      parts.push(`${parentId} -> ${nodeId} [color=${color}]`);
+      parts.push(`${parentId} -> ${nodeId} [color=${color} headport=w]`);
     }
 
     return nodeId;
@@ -123,10 +128,20 @@ export default function render(...roots) {
     parts.push(
       `${rootNodeId} [label=<<B>${++index}</B>> shape=cds color=white fontcolor=white fillcolor="#cccccc" style=filled]`
     );
-    const nodeId = recurse(root, colorNum++ % 6 + 1);
-    parts.push(
-      `${rootNodeId} -> ${nodeId} [style=dashed color="#cccccc" arrowhead=none]`
-    );
+
+    const color = colorNum++ % 6 + 1;
+
+    const nodeId = recurse(root, color);
+
+    if (typeof root === "object") {
+      parts.push(
+        `${rootNodeId} -> ${nodeId} [color=${color} tailport=e headport=w]`
+      );
+    } else {
+      parts.push(
+        `${rootNodeId} -> ${nodeId} [headport=w tailport=e arrowhead=none color="#cccccc"]`
+      );
+    }
   }
 
   parts.push(`{ rank=same; ${rootNodeIds.join("->")} [style=invis] }`);
@@ -134,6 +149,8 @@ export default function render(...roots) {
   parts.push("}");
 
   const dot = parts.join("\n");
+
+  console.log(dot);
   const svg = Viz(dot);
   return svg;
 }
