@@ -1,7 +1,4 @@
 export default `
-// Call the "show" function with any objects/values
-// that you'd like to graph.
-
 const obj1 = {
   name: 'Dan',
   numbers: [11, 13, 17]

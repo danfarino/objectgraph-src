@@ -25,7 +25,8 @@ class Graph extends React.Component {
     svg: "",
     error: null,
     code: initialCode,
-    rendering: false
+    rendering: false,
+    helpVisible: false
   };
 
   componentDidMount() {
@@ -77,8 +78,12 @@ class Graph extends React.Component {
     );
   };
 
+  toggleHelp = () => {
+    this.setState(prev => ({ helpVisible: !prev.helpVisible }));
+  };
+
   render() {
-    const { svg, code, error, rendering } = this.state;
+    const { svg, code, error, rendering, helpVisible } = this.state;
 
     return (
       <div className="Graph">
@@ -88,9 +93,35 @@ class Graph extends React.Component {
             <button onClick={this.renderGraph} disabled={rendering}>
               Render
             </button>
-            <button onClick={this.getLink} disabled={rendering}>
-              Get Link
+            <button onClick={this.getLink}>Get Link</button>
+            <button onClick={this.toggleHelp}>
+              {helpVisible ? "Hide Help" : "Show Help"}
             </button>
+          </div>
+          <div className="help">
+            {helpVisible && (
+              <div>
+                <ul>
+                  <li>
+                    Call the "show" function with any objects/values that you'd
+                    like to graph.
+                  </li>
+                  <li>
+                    Hit Ctrl-Enter to render while the cursor is focused in the
+                    code editor.
+                  </li>
+                  <li>
+                    If you'd like to use{" "}
+                    <a
+                      href="https://github.com/mweststrate/immer"
+                      target="_blank"
+                    >
+                      immer
+                    </a>, it's in scope as "produce".
+                  </li>
+                </ul>
+              </div>
+            )}
           </div>
           <CodeMirror
             value={code}
