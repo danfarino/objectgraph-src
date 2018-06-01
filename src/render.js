@@ -1,4 +1,6 @@
-import * as Viz from "viz.js";
+import Viz from "viz.js";
+
+const viz = new Viz({ workerURL: "/full.render.js" });
 
 export default function render(...roots) {
   const parts = [
@@ -152,6 +154,5 @@ export default function render(...roots) {
 
   const dot = parts.join("\n");
 
-  const svg = Viz(dot);
-  return svg;
+  return viz.renderString(dot);
 }

@@ -24,15 +24,22 @@ class Graph extends React.Component {
   state = {
     svg: "",
     error: null,
-    code: initialCode
+    code: initialCode,
+    rendering: false
   };
 
   componentDidMount() {
     this.renderGraph();
   }
 
-  renderGraph = () => {
+  renderGraph = async () => {
+    if (this.state.rendering) {
+      return;
+    }
+
     try {
+      this.setState({ rendering: true });
+
       let toShow = [];
       function show(...args) {
         for (const obj of args) {
@@ -48,10 +55,10 @@ class Graph extends React.Component {
 
       eval(this.state.code);
 
-      const svg = render(...toShow);
-      this.setState({ root, svg, error: null });
+      const svg = await render(...toShow);
+      this.setState({ svg, error: null, rendering: false });
     } catch (e) {
-      this.setState({ error: String(e) });
+      this.setState({ error: String(e), rendering: false });
     }
   };
 
@@ -71,22 +78,32 @@ class Graph extends React.Component {
   };
 
   render() {
-    const { svg, code, error } = this.state;
+    const { svg, code, error, rendering } = this.state;
 
     return (
       <div className="Graph">
         <div className="svg" dangerouslySetInnerHTML={{ __html: svg }} />
         <div className="code">
           <div className="buttons">
-            <button onClick={this.renderGraph}>Render</button>
-            <button onClick={this.getLink}>Get Link</button>
+            <button onClick={this.renderGraph} disabled={rendering}>
+              Render
+            </button>
+            <button onClick={this.getLink} disabled={rendering}>
+              Get Link
+            </button>
           </div>
           <CodeMirror
             value={code}
             onBeforeChange={(editor, data, value) =>
               this.setState({ code: value })
             }
-            options={{ mode: "javascript", lineNumbers: true }}
+            options={{
+              mode: "javascript",
+              lineNumbers: true,
+              extraKeys: {
+                "Ctrl-Enter": this.renderGraph
+              }
+            }}
           />
           <div className="error">{error}</div>
         </div>
