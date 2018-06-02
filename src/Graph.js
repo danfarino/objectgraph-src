@@ -7,8 +7,9 @@ import "codemirror/theme/material.css";
 import "codemirror/mode/javascript/javascript";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import exampleCode from "./exampleCode";
-import "./Graph.css";
 import LZString from "lz-string";
+import injectStyles from "react-jss";
+import styles from "./Graph-css";
 
 const urlParams = new URLSearchParams(window.location.search);
 let initialCode;
@@ -22,7 +23,7 @@ if (urlParams.get("code")) {
 
 class Graph extends React.Component {
   state = {
-    svg: "",
+    svg: null,
     error: null,
     code: initialCode,
     rendering: false,
@@ -42,6 +43,8 @@ class Graph extends React.Component {
       this.setState({ rendering: true });
 
       let toShow = [];
+
+      // eslint-disable-next-line no-unused-vars
       function show(...args) {
         for (const obj of args) {
           toShow.push(obj);
@@ -50,10 +53,12 @@ class Graph extends React.Component {
 
       // we need to capture this function here otherwise eval can't see it
       // (probably has something to do with webpack)
+      // eslint-disable-next-line no-unused-vars
       function produce(...args) {
         return immerProduce(...args);
       }
 
+      // eslint-disable-next-line no-eval
       eval(this.state.code);
 
       const svg = await render(...toShow);
@@ -83,13 +88,21 @@ class Graph extends React.Component {
   };
 
   render() {
+    const { classes } = this.props;
     const { svg, code, error, rendering, helpVisible } = this.state;
 
     return (
-      <div className="Graph">
-        <div className="svg" dangerouslySetInnerHTML={{ __html: svg }} />
-        <div className="code">
-          <div className="buttons">
+      <div className={classes.root}>
+        {svg === null ? (
+          <div className={classes.loading}>Loading...</div>
+        ) : (
+          <div
+            className={classes.svg}
+            dangerouslySetInnerHTML={{ __html: svg }}
+          />
+        )}
+        <div className={classes.code}>
+          <div className={classes.buttons}>
             <button onClick={this.renderGraph} disabled={rendering}>
               Render
             </button>
@@ -98,7 +111,7 @@ class Graph extends React.Component {
               {helpVisible ? "Hide Help" : "Show Help"}
             </button>
           </div>
-          <div className="help">
+          <div className={classes.help}>
             {helpVisible && (
               <div>
                 <div className="title">JavaScript Object Reference Graph</div>
@@ -117,6 +130,7 @@ class Graph extends React.Component {
                     <a
                       href="https://github.com/mweststrate/immer"
                       target="_blank"
+                      rel="noopener noreferrer"
                     >
                       immer
                     </a>, it's in scope as "produce".
@@ -138,11 +152,11 @@ class Graph extends React.Component {
               }
             }}
           />
-          <div className="error">{error}</div>
+          <div className={classes.error}>{error}</div>
         </div>
       </div>
     );
   }
 }
 
-export default Graph;
+export default injectStyles(styles)(Graph);

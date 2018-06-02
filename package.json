@@ -10,6 +10,7 @@
     "react": "^16.4.0",
     "react-codemirror2": "^5.0.4",
     "react-dom": "^16.4.0",
+    "react-jss": "^8.4.0",
     "react-scripts": "1.1.4",
     "viz.js": "^2.0.0"
   },

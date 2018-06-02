@@ -45,9 +45,9 @@ export default function render(...roots) {
 
         case "string":
           parts.push(
-            `${nodeId} [label="\\\"${escapeString(
+            `${nodeId} [label="\\"${escapeString(
               node
-            )}\\\"" color="#cccccc" shape=rect]`
+            )}\\"" color="#cccccc" shape=rect]`
           );
           break;
 
