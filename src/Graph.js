@@ -101,6 +101,8 @@ class Graph extends React.Component {
           <div className="help">
             {helpVisible && (
               <div>
+                <div className="title">JavaScript Object Reference Graph</div>
+                <div className="by">by Dan Farino, 2018</div>
                 <ul>
                   <li>
                     Call the "show" function with any objects/values that you'd

@@ -49,8 +49,22 @@
 
 .Graph > .code > .help  ul {
     padding-left: 2em;
+    padding-bottom: 0.1em;
 }
 
 .Graph > .code > .help  li {
     margin-bottom: 0.5em;
+}
+
+.Graph > .code > .help .title {
+    font-weight: bold;
+    padding-left: 1em;
+    padding-top: 1em;
+}
+
+.Graph > .code > .help .by {
+    margin-bottom: 0.5em;
+    padding-left: 1.3em;
+    padding-top: 0.3em;
+    font-size: 0.8em;
 }

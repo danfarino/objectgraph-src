@@ -1,6 +1,6 @@
 import Viz from "viz.js";
 
-const viz = new Viz({ workerURL: "/full.render.js" });
+const viz = new Viz({ workerURL: "full.render.js" });
 
 export default function render(...roots) {
   const parts = [
