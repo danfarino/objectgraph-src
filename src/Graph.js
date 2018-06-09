@@ -1,15 +1,11 @@
 import React from "react";
 import render from "./render";
 import immerProduce from "immer";
-import "codemirror";
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material.css";
-import "codemirror/mode/javascript/javascript";
-import { Controlled as CodeMirror } from "react-codemirror2";
 import exampleCode from "./exampleCode";
 import LZString from "lz-string";
 import injectStyles from "react-jss";
 import styles from "./Graph-css";
+import Editor from "./Editor";
 
 const urlParams = new URLSearchParams(window.location.search);
 let initialCode;
@@ -139,18 +135,10 @@ class Graph extends React.Component {
               </div>
             )}
           </div>
-          <CodeMirror
-            value={code}
-            onBeforeChange={(editor, data, value) =>
-              this.setState({ code: value })
-            }
-            options={{
-              mode: "javascript",
-              lineNumbers: true,
-              extraKeys: {
-                "Ctrl-Enter": this.renderGraph
-              }
-            }}
+          <Editor
+            code={code}
+            onChange={code => this.setState({ code })}
+            renderGraph={this.renderGraph}
           />
           <div className={classes.error}>{error}</div>
         </div>
