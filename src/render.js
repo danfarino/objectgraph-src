@@ -15,6 +15,7 @@ export default function render(...roots) {
 
   let nextId = 1;
   const ids = new WeakMap(); // switch to Map to see the rendering share values
+  // TODO: refactor without WeakMap
 
   function escapeString(str) {
     return str.replace(/\\/g, "\\\\").replace(/"/g, '\\"');

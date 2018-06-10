@@ -1,27 +1,62 @@
 import React from "react";
-import "codemirror";
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material.css";
-import "codemirror/mode/javascript/javascript";
-import { Controlled as CodeMirror } from "react-codemirror2";
+import * as monaco from "monaco-editor";
+
+window.MonacoEnvironment = {
+  getWorkerUrl: function(moduleId, label) {
+    if (label === "typescript" || label === "javascript") {
+      return "ts.worker.bundle.js";
+    }
+    return "editor.worker.bundle.js";
+  }
+};
 
 class Editor extends React.Component {
-  render() {
-    const { code, onChange, renderGraph } = this.props;
+  editorRef = React.createRef();
 
-    return (
-      <CodeMirror
-        value={code}
-        onBeforeChange={(editor, data, value) => onChange(value)}
-        options={{
-          mode: "javascript",
-          lineNumbers: true,
-          extraKeys: {
-            "Ctrl-Enter": renderGraph
-          }
-        }}
-      />
-    );
+  componentDidUpdate(prevProps) {
+    if (this.props.code !== this.editorCode) {
+      console.log("update");
+      this.editor.updateOptions({
+        value: this.props.code
+      });
+    }
+  }
+
+  componentDidMount() {
+    this.editor = monaco.editor.create(this.editorRef.current, {
+      language: "javascript",
+      value: this.props.code,
+      scrollBeyondLastLine: false,
+      fontSize: 18,
+      minimap: {
+        enabled: false
+      }
+    });
+
+    this.editor.focus();
+
+    this.editorCode = this.editor.getValue();
+
+    this.editor.onDidChangeModelContent(() => {
+      this.editorCode = this.editor.getValue();
+      this.props.onChange(this.editorCode);
+    });
+
+    window.addEventListener("resize", this.handleResize);
+  }
+
+  handleResize = () => {
+    this.editor.layout();
+  };
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.handleResize);
+
+    this.editor.dispose();
+  }
+
+  render() {
+    return <div style={{ height: "100%" }} ref={this.editorRef} />;
   }
 }
 

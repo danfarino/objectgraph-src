@@ -1,7 +1,7 @@
 export default {
   root: {
     display: "grid",
-    gridTemplateColumns: "34em 1fr",
+    gridTemplateColumns: "6fr 10fr",
     gridTemplateAreas: '"code svg"',
     position: "fixed",
     top: "0px",
@@ -11,7 +11,13 @@ export default {
     fontFamily: "sans-serif"
   },
 
-  error: { padding: "0.2em", color: "red" },
+  error: {
+    padding: "0.2em",
+    color: "red",
+    zIndex: 1,
+    backgroundColor: "white",
+    borderTop: "1px solid #ddd"
+  },
 
   loading: {
     fontSize: "4em",
@@ -26,39 +32,25 @@ export default {
     borderRight: "1px solid #ddd",
     display: "grid",
     gridTemplateRows: "auto auto 1fr auto",
+    minHeight: 0,
+    minWidth: 0,
+    maxWidth: "100%"
+  },
 
-    "& .CodeMirror": { height: "100%", fontSize: "1.3em" }
+  editor: {
+    marginTop: "0.5em",
+    minHeight: 0,
+    minWidth: 0
   },
 
   buttons: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(0, 1fr))"
+    gridTemplateColumns: "repeat(auto-fit, minmax(8em, auto))"
   },
 
   svg: {
     gridArea: "svg",
     marginLeft: "2em",
     overflow: "scroll"
-  },
-
-  help: {
-    backgroundColor: "#f1f1f1",
-    borderBottom: "1px solid #ccc",
-
-    "& ul": {
-      paddingLeft: "2em",
-      paddingBottom: "0.1em"
-    },
-
-    "& li": { marginBottom: "0.5em" },
-
-    "& .title": { fontWeight: "bold", paddingLeft: "1em", paddingTop: "1em" },
-
-    "& .by": {
-      marginBottom: "0.5em",
-      paddingLeft: "1.3em",
-      paddingTop: "0.3em",
-      fontSize: "0.8em"
-    }
   }
 };
