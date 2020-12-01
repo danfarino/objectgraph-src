@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export PUBLIC_URL='https://danfarino.github.io/objectgraph'
+
 npm run build &&
 cd build &&
 rm .gitignore && # so we don't accidentally ignore bundle.js files

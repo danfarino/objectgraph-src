@@ -2,7 +2,6 @@
   "name": "objectgraph",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://danfarino.github.io/objectgraph",
   "dependencies": {
     "immer": "8.0.0",
     "lz-string": "1.4.4",
