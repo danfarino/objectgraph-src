@@ -2,12 +2,12 @@ import React from "react";
 import * as monaco from "monaco-editor";
 
 window.MonacoEnvironment = {
-  getWorkerUrl: function(moduleId, label) {
+  getWorkerUrl: function (moduleId, label) {
     if (label === "typescript" || label === "javascript") {
       return "ts.worker.bundle.js";
     }
     return "editor.worker.bundle.js";
-  }
+  },
 };
 
 class Editor extends React.Component {
@@ -17,7 +17,7 @@ class Editor extends React.Component {
     if (this.props.code !== this.editorCode) {
       console.log("update");
       this.editor.updateOptions({
-        value: this.props.code
+        value: this.props.code,
       });
     }
   }
@@ -29,8 +29,8 @@ class Editor extends React.Component {
       scrollBeyondLastLine: false,
       fontSize: 18,
       minimap: {
-        enabled: false
-      }
+        enabled: false,
+      },
     });
 
     this.editor.focus();
@@ -43,6 +43,7 @@ class Editor extends React.Component {
     });
 
     window.addEventListener("resize", this.handleResize);
+    window.setTimeout(() => this.handleResize(), 0);
   }
 
   handleResize = () => {

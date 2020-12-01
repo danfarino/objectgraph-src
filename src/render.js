@@ -10,7 +10,7 @@ export default function render(...roots) {
     "concentrate = true",
     "rankdir = LR",
     'node [colorscheme = "pastel16" fontname = courier]',
-    'edge [colorscheme = "pastel16"]'
+    'edge [colorscheme = "pastel16"]',
   ];
 
   let nextId = 1;
@@ -132,7 +132,7 @@ export default function render(...roots) {
       `${rootNodeId} [label=<<B>${++index}</B>> shape=cds color=white fontcolor=white fillcolor="#cccccc" style=filled]`
     );
 
-    const color = colorNum++ % 6 + 1;
+    const color = (colorNum++ % 6) + 1;
 
     const nodeId = recurse(root, color);
 

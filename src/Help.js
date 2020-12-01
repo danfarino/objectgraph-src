@@ -9,16 +9,16 @@ const styles = {
 
     "& a:link": {
       textDecoration: "none",
-      color: "rgb(0, 0, 238)"
+      color: "rgb(0, 0, 238)",
     },
 
     "& a:hover": {
-      textDecoration: "underline"
+      textDecoration: "underline",
     },
 
     "& a:visited": {
-      color: "rgb(0, 0, 238)"
-    }
+      color: "rgb(0, 0, 238)",
+    },
   },
 
   ul: {
@@ -27,20 +27,20 @@ const styles = {
     paddingLeft: "1em",
 
     "& li:not(:last-child)": {
-      marginBottom: "1em"
-    }
+      marginBottom: "0.7em",
+    },
   },
 
   title: {
     fontWeight: "bold",
-    fontSize: "1.1em"
+    fontSize: "1.1em",
   },
 
   by: {
     fontSize: "0.8em",
     marginTop: "0.3em",
-    marginLeft: "0.1em"
-  }
+    marginLeft: "0.1em",
+  },
 };
 
 function Help(props) {
@@ -49,21 +49,36 @@ function Help(props) {
   return (
     <div className={classes.root}>
       <div className={classes.title}>JavaScript Object Reference Graph</div>
-      <div className={classes.by}>by Dan Farino, 2018</div>
+      <div className={classes.by}>by Dan Farino, 2018-2020</div>
       <ul className={classes.ul}>
         <li>
           Call the &ldquo;show&rdquo; function with any objects/values that
           you&rsquo;d like to graph.
         </li>
+        <li>Because they are immutable, strings are shown as value types.</li>
         <li>
           If you&rsquo;d like to use{" "}
           <a
-            href="https://github.com/mweststrate/immer#example"
+            href="https://immerjs.github.io/immer/docs/introduction#quick-example"
             target="_blank"
             rel="noopener noreferrer"
           >
-            immer
-          </a>, it&rsquo;s in scope as &ldquo;produce&rdquo;.
+            immer 8.0
+          </a>
+          , it&rsquo;s in scope as &ldquo;produce&rdquo; (
+          <a href="?code=MYewdgzgLgBCBGArAjDAvDA3gKBjMAhgLYCmAXDAOQAiBYlANLvgK5HwkBOEFA2ssgYxkAZiHIA7AF1sAXwDc2bBAAWIAO4AKBCgCUi7KEiwdAJnQwADpxAATFsBLakgmLfQA+LM1sA6QqQWlABSICr0irL6Sqoazoim0Ybg0HBIIhbWdg5OZkLuaF44eH5gbBzcvAAMUhYALKaKJf7lXBC+liyqmshVVdFRBrFaOiLRQA">
+            example
+          </a>
+          ).
+        </li>
+        <li>
+          <a
+            href="https://github.com/danfarino/objectgraph-src"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Source code on GitHub
+          </a>
         </li>
       </ul>
     </div>
