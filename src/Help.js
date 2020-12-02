@@ -58,7 +58,7 @@ function Help(props) {
         <li>
           If you&rsquo;d like to use{" "}
           <a
-            href="https://immerjs.github.io/immer/docs/introduction#quick-example"
+            href="https://immerjs.github.io/immer/docs/introduction"
             target="_blank"
             rel="noopener noreferrer"
           >
