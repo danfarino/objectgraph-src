@@ -2,7 +2,9 @@ import Viz from "viz.js";
 
 const viz = new Viz({ workerURL: "full.render.js" });
 
-export default function render(...roots) {
+export default function render(config, ...roots) {
+  const { stringsAsValues } = config;
+
   const parts = [
     "digraph {",
     "splines = true",
@@ -14,7 +16,7 @@ export default function render(...roots) {
   ];
 
   let nextId = 1;
-  const ids = new WeakMap(); // switch to Map to see the rendering share values
+  const ids = new Map(); // switch to WeakMap for values to not share nodes
   // TODO: refactor without WeakMap
 
   function escapeString(str) {
@@ -88,7 +90,7 @@ export default function render(...roots) {
                 label += String(value);
               }
 
-              if (typeof value === "string") {
+              if (stringsAsValues && typeof value === "string") {
                 isValueType = true;
                 label += `"${escapeString(value)}"`;
               }

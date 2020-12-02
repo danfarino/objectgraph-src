@@ -25,7 +25,8 @@ class App extends React.Component {
     error: null,
     code: initialCode,
     rendering: false,
-    helpVisible: false
+    helpVisible: false,
+    stringsAsValues: true,
   };
 
   componentDidMount() {
@@ -39,6 +40,8 @@ class App extends React.Component {
 
     try {
       this.setState({ rendering: true });
+
+      const { stringsAsValues } = this.state;
 
       let toShow = [];
 
@@ -60,7 +63,7 @@ class App extends React.Component {
       // eslint-disable-next-line no-eval
       eval(this.state.code);
 
-      const svg = await render(...toShow);
+      const svg = await render({ stringsAsValues }, ...toShow);
       this.setState({ svg, error: null, rendering: false });
     } catch (e) {
       this.setState({ error: String(e), rendering: false });
@@ -83,12 +86,26 @@ class App extends React.Component {
   };
 
   toggleHelp = () => {
-    this.setState(prev => ({ helpVisible: !prev.helpVisible }));
+    this.setState((prev) => ({ helpVisible: !prev.helpVisible }));
+  };
+
+  handleStringDisplayChange = (e) => {
+    this.setState(
+      { stringsAsValues: e.target.value === "true" },
+      this.renderGraph
+    );
   };
 
   render() {
     const { classes } = this.props;
-    const { svg, code, error, rendering, helpVisible } = this.state;
+    const {
+      svg,
+      code,
+      error,
+      rendering,
+      helpVisible,
+      stringsAsValues,
+    } = this.state;
 
     return (
       <div className={classes.root}>
@@ -104,10 +121,18 @@ class App extends React.Component {
             <button onClick={this.toggleHelp}>
               {helpVisible ? "Hide Help" : "Show Help"}
             </button>
+            <select
+              value={stringsAsValues}
+              onChange={this.handleStringDisplayChange}
+              disabled={rendering}
+            >
+              <option value={true}>Strings as values</option>
+              <option value={false}>Strings as refs</option>
+            </select>
           </div>
           <div className={classes.help}>{helpVisible && <Help />}</div>
           <div className={classes.editor}>
-            <Editor code={code} onChange={code => this.setState({ code })} />
+            <Editor code={code} onChange={(code) => this.setState({ code })} />
           </div>
           {error && <div className={classes.error}>{error}</div>}
         </div>

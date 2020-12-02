@@ -55,7 +55,6 @@ function Help(props) {
           Call the &ldquo;show&rdquo; function with any objects/values that
           you&rsquo;d like to graph.
         </li>
-        <li>Because they are immutable, strings are shown as value types.</li>
         <li>
           If you&rsquo;d like to use{" "}
           <a
@@ -79,6 +78,19 @@ function Help(props) {
           >
             Source code on GitHub
           </a>
+        </li>
+        <li>
+          <span>
+            To keep the graph simple, strings are rendered as value types. For a
+            more accurate (and more cluttered) graph, you can choose to render
+            strings as reference types.
+            <br />
+          </span>
+          <em>
+            Note: the rendering assumes all identical strings are shared. This
+            may not be true in all cases (e.g. when you are programmatically
+            generating strings).
+          </em>
         </li>
       </ul>
     </div>
