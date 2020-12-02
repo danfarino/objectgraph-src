@@ -81,15 +81,16 @@ function Help(props) {
         </li>
         <li>
           <span>
-            To keep the graph simple, strings are rendered as value types. For a
-            more accurate (and more cluttered) graph, you can choose to render
-            strings as reference types.
-            <br />
+            Since strings are immutable, you can render them as values in order
+            to de-clutter the output. However, rendering them as references is
+            more accurate in showing that references are being shared and no
+            copies of the strings are being made.
           </span>
+          <br />
           <em>
-            Note: the rendering assumes all identical strings are shared. This
-            may not be true in all cases (e.g. when you are programmatically
-            generating strings).
+            Note: when rendering strings as references, it is assumed that all
+            identical strings are shared in memory. This may not be true in all
+            cases (e.g. when you are programmatically generating strings).
           </em>
         </li>
       </ul>

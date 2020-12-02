@@ -26,7 +26,7 @@ class App extends React.Component {
     code: initialCode,
     rendering: false,
     helpVisible: false,
-    stringsAsValues: true,
+    stringsAsValues: false,
   };
 
   componentDidMount() {
@@ -126,8 +126,8 @@ class App extends React.Component {
               onChange={this.handleStringDisplayChange}
               disabled={rendering}
             >
+              <option value={false}>Strings as references</option>
               <option value={true}>Strings as values</option>
-              <option value={false}>Strings as refs</option>
             </select>
           </div>
           <div className={classes.help}>{helpVisible && <Help />}</div>
